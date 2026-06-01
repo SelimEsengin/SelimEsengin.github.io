@@ -6,7 +6,7 @@
   <title>Selif</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Satisfy&family=Raleway:wght@300&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Satisfy&family=Raleway:wght@300;400&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -19,15 +19,28 @@
       overflow: hidden;
     }
 
-    .bg {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
+    .bg { position: fixed; inset: 0; z-index: 0; }
+    .bg-grid { position: absolute; inset: 0; }
+
+    .circle {
+      position: absolute;
+      border-radius: 50%;
+      background: #2c2c2c;
+      opacity: 0.06;
     }
 
-    .bg svg {
-      width: 100%;
-      height: 100%;
+    .c1 { width: 500px; height: 500px; top: -100px; left: -150px; animation: float1 14s ease-in-out infinite; }
+    .c2 { width: 350px; height: 350px; bottom: -80px; right: -80px; animation: float2 18s ease-in-out infinite; }
+
+    @keyframes float1 {
+      0%, 100% { transform: translate(0, 0); }
+      33%       { transform: translate(40px, 30px); }
+      66%       { transform: translate(-20px, 50px); }
+    }
+    @keyframes float2 {
+      0%, 100% { transform: translate(0, 0); }
+      33%       { transform: translate(-50px, -30px); }
+      66%       { transform: translate(20px, -50px); }
     }
 
     .container {
@@ -48,6 +61,8 @@
       opacity: 0;
       transform: translateY(20px);
       animation: fadeUp 1s ease forwards 0.3s;
+      cursor: default;
+      user-select: none;
     }
 
     .divider {
@@ -78,62 +93,214 @@
       animation: blink 0.7s step-end infinite;
     }
 
-    @keyframes fadeUp {
-      to { opacity: 1; transform: translateY(0); }
+    .icons {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      opacity: 0;
+      animation: fadeIn 0.6s ease forwards 2.4s;
+      margin-top: 8px;
     }
 
-    @keyframes expandLine {
-      to { width: 48px; }
+    .icon-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      opacity: 0.35;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      text-decoration: none;
     }
 
-    @keyframes fadeIn {
-      to { opacity: 1; }
+    .icon-link:hover { opacity: 0.75; transform: translateY(-2px); }
+    .icon-link svg { width: 20px; height: 20px; fill: #1a1a1a; }
+
+    .status-bar {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      opacity: 0;
+      animation: fadeIn 0.6s ease forwards 2.8s;
+      margin-top: 4px;
     }
 
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Raleway', sans-serif;
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      color: #aaa;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #aaa;
+    }
+
+    .dot.online { background: #6dbf7e; animation: pulse 2.5s ease-in-out infinite; }
+    .dot.offline { background: #e08080; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.4; }
+    }
+
+    .datetime {
+      font-family: 'Raleway', sans-serif;
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      color: #bbb;
+    }
+
+    .confetti-piece {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      pointer-events: none;
+      z-index: 999;
+      animation: confettiFall linear forwards;
+    }
+
+    @keyframes confettiFall {
+      0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
+
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    @keyframes expandLine { to { width: 48px; } }
+    @keyframes fadeIn { to { opacity: 1; } }
     @keyframes blink {
       0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
+      50%       { opacity: 0; }
     }
   </style>
 </head>
 <body>
 
   <div class="bg">
-    <svg xmlns="http://www.w3.org/2000/svg">
+    <svg class="bg-grid" xmlns="http://www.w3.org/2000/svg">
       <line x1="0" y1="25%" x2="100%" y2="25%" stroke="#2c2c2c" stroke-width="0.5" opacity="0.05"/>
       <line x1="0" y1="50%" x2="100%" y2="50%" stroke="#2c2c2c" stroke-width="0.5" opacity="0.05"/>
       <line x1="0" y1="75%" x2="100%" y2="75%" stroke="#2c2c2c" stroke-width="0.5" opacity="0.05"/>
       <line x1="25%" y1="0" x2="25%" y2="100%" stroke="#2c2c2c" stroke-width="0.5" opacity="0.05"/>
       <line x1="50%" y1="0" x2="50%" y2="100%" stroke="#2c2c2c" stroke-width="0.5" opacity="0.05"/>
       <line x1="75%" y1="0" x2="75%" y2="100%" stroke="#2c2c2c" stroke-width="0.5" opacity="0.05"/>
-      <circle cx="15%" cy="15%" r="300" fill="#2c2c2c" opacity="0.03"/>
-      <circle cx="85%" cy="85%" r="250" fill="#2c2c2c" opacity="0.03"/>
     </svg>
+    <div class="circle c1"></div>
+    <div class="circle c2"></div>
   </div>
 
   <div class="container">
-    <div class="logo">Selif</div>
+    <div class="logo" id="logo">Selif</div>
     <div class="divider"></div>
     <div class="motto"><span id="typed"></span><span class="cursor" id="cursor"></span></div>
+
+    <div class="icons">
+      <a class="icon-link" href="https://ha.selif.nl" target="_blank" title="Home Assistant">
+        <svg viewBox="0 0 24 24"><path d="M12 2L2 8.5V21h7v-6h6v6h7V8.5L12 2zm0 2.35L20 9.5V19h-3v-6H7v6H4V9.5L12 4.35z"/><circle cx="12" cy="13" r="2"/></svg>
+      </a>
+      <a class="icon-link" href="https://github.com/SelimEsengin/SelimEsengin.github.io" target="_blank" title="GitHub">
+        <svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+      </a>
+      <a class="icon-link" href="#" title="Obsidian (coming soon)">
+        <svg viewBox="0 0 24 24"><path d="M12.008 0c-.636.367-1.32.65-1.968 1.02C8.086 2.394 6.676 4.73 6.44 7.13c-.164 1.656.22 3.312.046 4.968-.156 1.49-.762 2.882-1.128 4.328-.486 1.896-.402 3.946.378 5.76.386.908.96 1.74 1.704 2.392-.29-.538-.538-1.1-.664-1.7-.386-1.82.22-3.7 1.1-5.318.878-1.618 2.024-3.08 2.79-4.762.764-1.68.986-3.63.326-5.368-.33-.874-.876-1.656-1.06-2.578-.18-.878-.012-1.804.35-2.618.596-1.354 1.72-2.426 3.018-3.086L12.008 0zm2.158.65c1.782.95 3.14 2.622 3.674 4.572.408 1.49.268 3.066-.144 4.54-.544 1.944-1.554 3.72-1.914 5.716-.314 1.72-.108 3.542.632 5.118.37.784.888 1.498 1.302 2.264.37.692.618 1.46.576 2.25-.034.626-.246 1.24-.564 1.78 1.12-.87 1.948-2.072 2.35-3.406.534-1.766.308-3.686-.298-5.408-.608-1.724-1.546-3.31-2.076-5.062-.532-1.756-.572-3.67-.016-5.422.39-1.24 1.05-2.388 1.348-3.654.234-1 .214-2.05-.05-3.044a6.74 6.74 0 0 0-.82-2.244z"/></svg>
+      </a>
+    </div>
+
+    <div class="status-bar">
+      <div class="status">
+        <div class="dot" id="ha-dot"></div>
+        <span id="ha-status">checking...</span>
+      </div>
+      <div class="datetime" id="datetime"></div>
+    </div>
   </div>
 
   <script>
+    // Typing animation
     const text = 'Where two become one.';
     const el = document.getElementById('typed');
     const cursor = document.getElementById('cursor');
     let i = 0;
-
     function type() {
       if (i < text.length) {
-        el.textContent += text[i];
-        i++;
+        el.textContent += text[i++];
         setTimeout(type, 68);
       } else {
         setTimeout(() => cursor.style.display = 'none', 1200);
       }
     }
-
     setTimeout(type, 1800);
+
+    // Date & time
+    function updateTime() {
+      const now = new Date();
+      const opts = { weekday: 'short', day: 'numeric', month: 'short' };
+      const date = now.toLocaleDateString('en-GB', opts);
+      const time = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+      document.getElementById('datetime').textContent = date + ' · ' + time;
+    }
+    updateTime();
+    setInterval(updateTime, 1000);
+
+    // HA status check
+    async function checkHA() {
+      const dot = document.getElementById('ha-dot');
+      const label = document.getElementById('ha-status');
+      try {
+        const res = await fetch('https://ha.selif.nl', { mode: 'no-cors', cache: 'no-cache' });
+        dot.classList.add('online');
+        label.textContent = 'HA online';
+      } catch {
+        dot.classList.add('offline');
+        label.textContent = 'HA offline';
+      }
+    }
+    checkHA();
+    setInterval(checkHA, 60000);
+
+    // Easter egg — triple tap/click on Selif
+    const logo = document.getElementById('logo');
+    let taps = 0;
+    let tapTimer;
+
+    logo.addEventListener('click', () => {
+      taps++;
+      clearTimeout(tapTimer);
+      tapTimer = setTimeout(() => { taps = 0; }, 600);
+      if (taps >= 3) {
+        taps = 0;
+        launchConfetti();
+      }
+    });
+
+    const colors = ['#f87171','#fb923c','#facc15','#4ade80','#60a5fa','#c084fc','#f472b6','#34d399'];
+
+    function launchConfetti() {
+      for (let i = 0; i < 80; i++) {
+        setTimeout(() => {
+          const piece = document.createElement('div');
+          piece.classList.add('confetti-piece');
+          piece.style.left = Math.random() * 100 + 'vw';
+          piece.style.top = '-10px';
+          piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+          piece.style.width = (6 + Math.random() * 6) + 'px';
+          piece.style.height = (6 + Math.random() * 6) + 'px';
+          piece.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+          piece.style.animationDelay = (Math.random() * 0.5) + 's';
+          document.body.appendChild(piece);
+          setTimeout(() => piece.remove(), 4000);
+        }, i * 15);
+      }
+    }
   </script>
 
 </body>
