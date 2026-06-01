@@ -134,16 +134,20 @@
       font-weight: 300;
       letter-spacing: 0.1em;
       color: #aaa;
+      text-decoration: none;
+      transition: opacity 0.2s;
     }
+
+    .status:hover { opacity: 0.7; }
 
     .dot {
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: #aaa;
+      background: #ccc;
     }
 
-    .dot.online { background: #6dbf7e; animation: pulse 2.5s ease-in-out infinite; }
+    .dot.online  { background: #6dbf7e; animation: pulse 2.5s ease-in-out infinite; }
     .dot.offline { background: #e08080; }
 
     @keyframes pulse {
@@ -161,8 +165,6 @@
 
     .confetti-piece {
       position: fixed;
-      width: 8px;
-      height: 8px;
       border-radius: 2px;
       pointer-events: none;
       z-index: 999;
@@ -216,10 +218,10 @@
     </div>
 
     <div class="status-bar">
-      <div class="status">
+      <a class="status" href="https://ha.selif.nl" target="_blank" id="ha-status-link">
         <div class="dot" id="ha-dot"></div>
-        <span id="ha-status">checking...</span>
-      </div>
+        <span id="ha-status">status · checking...</span>
+      </a>
       <div class="datetime" id="datetime"></div>
     </div>
   </div>
@@ -243,61 +245,55 @@
     // Date & time
     function updateTime() {
       const now = new Date();
-      const opts = { weekday: 'short', day: 'numeric', month: 'short' };
-      const date = now.toLocaleDateString('en-GB', opts);
+      const date = now.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
       const time = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
       document.getElementById('datetime').textContent = date + ' · ' + time;
     }
     updateTime();
     setInterval(updateTime, 1000);
 
-    // HA status check
+    // HA status via Cloudflare Worker
     async function checkHA() {
       const dot = document.getElementById('ha-dot');
       const label = document.getElementById('ha-status');
       try {
-        const res = await fetch('https://ha.selif.nl', { mode: 'no-cors', cache: 'no-cache' });
-        dot.classList.add('online');
-        label.textContent = 'HA online';
+        const res = await fetch('https://ha-status.sesengin.workers.dev');
+        const data = await res.json();
+        dot.className = 'dot ' + (data.online ? 'online' : 'offline');
+        label.textContent = data.online ? `status · HA online · ${data.status}` : `status · HA offline · ${data.status ?? "timeout"}`;
       } catch {
-        dot.classList.add('offline');
-        label.textContent = 'HA offline';
+        dot.className = 'dot offline';
+        label.textContent = "status · HA offline · timeout";
       }
     }
     checkHA();
     setInterval(checkHA, 60000);
 
-    // Easter egg — triple tap/click on Selif
+    // Easter egg — triple tap on Selif
     const logo = document.getElementById('logo');
-    let taps = 0;
-    let tapTimer;
-
+    let taps = 0, tapTimer;
     logo.addEventListener('click', () => {
       taps++;
       clearTimeout(tapTimer);
       tapTimer = setTimeout(() => { taps = 0; }, 600);
-      if (taps >= 3) {
-        taps = 0;
-        launchConfetti();
-      }
+      if (taps >= 3) { taps = 0; launchConfetti(); }
     });
 
     const colors = ['#f87171','#fb923c','#facc15','#4ade80','#60a5fa','#c084fc','#f472b6','#34d399'];
-
     function launchConfetti() {
       for (let i = 0; i < 80; i++) {
         setTimeout(() => {
-          const piece = document.createElement('div');
-          piece.classList.add('confetti-piece');
-          piece.style.left = Math.random() * 100 + 'vw';
-          piece.style.top = '-10px';
-          piece.style.background = colors[Math.floor(Math.random() * colors.length)];
-          piece.style.width = (6 + Math.random() * 6) + 'px';
-          piece.style.height = (6 + Math.random() * 6) + 'px';
-          piece.style.animationDuration = (1.5 + Math.random() * 2) + 's';
-          piece.style.animationDelay = (Math.random() * 0.5) + 's';
-          document.body.appendChild(piece);
-          setTimeout(() => piece.remove(), 4000);
+          const p = document.createElement('div');
+          p.classList.add('confetti-piece');
+          p.style.left = Math.random() * 100 + 'vw';
+          p.style.top = '-10px';
+          p.style.background = colors[Math.floor(Math.random() * colors.length)];
+          p.style.width = (6 + Math.random() * 6) + 'px';
+          p.style.height = (6 + Math.random() * 6) + 'px';
+          p.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+          p.style.animationDelay = (Math.random() * 0.5) + 's';
+          document.body.appendChild(p);
+          setTimeout(() => p.remove(), 4000);
         }, i * 15);
       }
     }
